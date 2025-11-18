@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Online Food Ordering</title>
+
+    <!-- Bootstrap CSS -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <!-- Bootstrap CSS for Icons -->
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css"
+    />
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/styles.css" />
+  </head>
+  <body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-white sticky-top">
+      <div class="container">
+        <a class="navbar-brand d-flex align-items-center" href="#">
+          <img src="assets/logo.png" alt="logo" class="me-2 logo-img" />
+          <span class="h5 mb-0">FoodieHub</span>
+        </a>
+
+        <!-- Search Section in Navbar -->
+
+        <div
+          class="w-50 d-flex justify-content-between align-items-center gap-2"
+        >
+          <input
+            type="text"
+            id="searchInput"
+            placeholder="Search for products..."
+            class="form-control flex-grow-1"
+          />
+          <button class="btn btn-danger" onclick="handleSearch()">
+            Search
+          </button>
+        </div>
+
+        <!-- All Categories-->
+        <div class="ms-auto d-flex align-items-center gap-2">
+          <div class="me-2">
+            <select id="categorySelect" class="form-select form-select-sm">
+              <option value="all">All Categories</option>
+            </select>
+          </div>
+
+          <!-- Cart Section in Navbar -->
+          <button
+            id="cartBtn"
+            class="btn btn-outline-primary position-relative"
+          >
+            Cart
+            <span
+              id="cartCount"
+              class="badge bg-danger position-absolute top-0 start-100 translate-middle"
+              >0</span
+            >
+          </button>
+
+          <!--Login and Register Section in Navbar -->
+          <button
+            id="loginBtn"
+            class="btn btn-outline-secondary ms-2"
+            data-bs-toggle="modal"
+            data-bs-target="#authModal"
+          >
+            Login / Register
+          </button>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Hero / Welcome Section -->
+    <section class="bg-white py-5">
+      <div
+        class="container d-flex text-center text-md-start flex-column flex-md-row align-items-center justify-content-between gap-4"
+      >
+        <div>
+          <h4 class="text-muted fw-bold">Enjoy Your Delicious Meal</h4>
+          <h1 class="display-4 fw-bold">
+            Discover Delicious <br />
+            Healthy Meal That <br />
+            Nourishes You
+          </h1>
+          <p class="text-secondary fs-5">
+            Welcome to our online food ordering platform — your one-stop
+            destination <br />
+            for tasty, hygienic, and freshly prepared meals delivered right to
+            your doorstep.<br />
+            Whether you're craving a cheesy pizza, spicy biryani, or refreshing
+            drinks, we've <br />
+            got something for everyone.
+          </p>
+          <a href="#productsRow" class="btn btn-danger mt-2"
+            >Explore Our Menu</a
+          >
+        </div>
+        <img
+          src="assets/pasta2.png"
+          alt="Delicious Meal"
+          class="img-fluid hero-img"
+          style="max-width: 500px; border-radius: 1rem"
+        />
+      </div>
+    </section>
+
+    <!-- title for Menu items-->
+    <div class="container">
+      <h2 class="text-start fw-bold fs-1 border-bottom pb-2 bg-white">
+        Discover Our Menu
+      </h2>
+    </div>
+
+    <main class="container my-4">
+      <div id="alertPlaceholder"></div>
+
+      <!-- Product grid -->
+      <section>
+        <div class="row" id="productsRow">
+          <!-- Products injected by JS -->
+        </div>
+      </section>
+    </main>
+    <!-- Footer -->
+    <footer class="bg-white border-top mt-5 pt-4">
+      <div class="container text-center">
+        <h4 class="fw-bold">Need Update on Latest Offers?</h4>
+        <p>Subscribe to our newsletter to get frequent updates</p>
+        <div
+          class="d-flex flex-column flex-sm-row justify-content-center gap-2 my-3"
+        >
+          <input
+            type="email"
+            placeholder="Enter your email"
+            class="form-control"
+            style="max-width: 300px"
+          />
+          <button class="btn btn-danger">Join Now</button>
+        </div>
+
+        <!-- Socials -->
+        <div class="mb-3">
+          <a href="#" class="me-2 text-dark fs-5"
+            ><i class="bi bi-facebook"></i
+          ></a>
+          <a href="#" class="me-2 text-dark fs-5"
+            ><i class="bi bi-instagram"></i
+          ></a>
+          <a href="#" class="text-dark fs-5"><i class="bi bi-youtube"></i></a>
+        </div>
+
+        <p class="small text-muted mb-0">
+          &copy; 2025 FoodieHub. All rights reserved.
+        </p>
+      </div>
+    </footer>
+
+    <!-- Cart Offcanvas -->
+    <div
+      class="offcanvas offcanvas-end"
+      tabindex="-1"
+      id="cartCanvas"
+      aria-labelledby="cartCanvasLabel"
+    >
+      <div class="offcanvas-header">
+        <h5 id="cartCanvasLabel">Your Cart</h5>
+        <button
+          type="button"
+          class="btn-close text-reset"
+          data-bs-dismiss="offcanvas"
+        ></button>
+      </div>
+      <div class="offcanvas-body d-flex flex-column">
+        <div id="cartItems" class="mb-3 overflow-auto"></div>
+        <div class="mt-auto">
+          <div class="d-flex justify-content-between mb-2">
+            <strong>Total</strong>
+            <strong id="cartTotal">₹0</strong>
+          </div>
+          <button
+            id="checkoutBtn"
+            class="btn btn-success w-100"
+            data-bs-toggle="modal"
+            data-bs-target="#checkoutModal"
+          >
+            Checkout
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Auth Modal (Login/Register) -->
+    <div class="modal fade" id="authModal" tabindex="-1" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="authTitle">Login</h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <!-- Nav tabs -->
+            <ul class="nav nav-tabs mb-3" role="tablist">
+              <li class="nav-item">
+                <button
+                  class="nav-link active"
+                  id="tab-login"
+                  data-bs-toggle="tab"
+                  data-bs-target="#tabLogin"
+                  type="button"
+                >
+                  Login
+                </button>
+              </li>
+              <li class="nav-item">
+                <button
+                  class="nav-link"
+                  id="tab-register"
+                  data-bs-toggle="tab"
+                  data-bs-target="#tabRegister"
+                  type="button"
+                >
+                  Register
+                </button>
+              </li>
+            </ul>
+
+            <div class="tab-content">
+              <div class="tab-pane fade show active" id="tabLogin">
+                <form id="loginForm" novalidate>
+                  <div class="mb-3">
+                    <label class="form-label">Email</label>
+                    <input
+                      id="loginEmail"
+                      type="email"
+                      class="form-control"
+                      required
+                    />
+                    <div class="invalid-feedback">Enter a valid email.</div>
+                  </div>
+                  <div class="mb-3">
+                    <label class="form-label">Password</label>
+                    <input
+                      id="loginPassword"
+                      type="password"
+                      class="form-control"
+                      required
+                    />
+                    <div class="invalid-feedback">Password required.</div>
+                  </div>
+                  <button class="btn btn-primary w-100">Login</button>
+                </form>
+              </div>
+
+              <div class="tab-pane fade" id="tabRegister">
+                <form id="registerForm" novalidate>
+                  <div class="mb-3">
+                    <label class="form-label">Full name</label>
+                    <input
+                      id="regName"
+                      type="text"
+                      class="form-control"
+                      required
+                    />
+                    <div class="invalid-feedback">Enter name.</div>
+                  </div>
+                  <div class="mb-3">
+                    <label class="form-label">Email</label>
+                    <input
+                      id="regEmail"
+                      type="email"
+                      class="form-control"
+                      required
+                    />
+                    <div class="invalid-feedback">Valid email required.</div>
+                  </div>
+                  <div class="mb-3">
+                    <label class="form-label">Password</label>
+                    <input
+                      id="regPassword"
+                      type="password"
+                      class="form-control"
+                      minlength="6"
+                      required
+                    />
+                    <div class="invalid-feedback">Min 6 characters.</div>
+                  </div>
+                  <button class="btn btn-success w-100">Register</button>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Checkout Modal (simple payment simulation) -->
+    <div class="modal fade" id="checkoutModal" tabindex="-1" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Checkout & Payment</h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <form id="paymentForm" novalidate>
+              <div class="mb-2">
+                <label class="form-label">Name on card</label>
+                <input id="cardName" class="form-control" required />
+                <div class="invalid-feedback">Name required.</div>
+              </div>
+              <div class="mb-2">
+                <label class="form-label">Card number</label>
+                <input
+                  id="cardNumber"
+                  class="form-control"
+                  maxlength="19"
+                  placeholder="1234 5678 9012 3456"
+                  required
+                />
+                <div class="invalid-feedback">Enter valid card number.</div>
+              </div>
+              <div class="row">
+                <div class="col-6 mb-2">
+                  <label class="form-label">Expiry</label>
+                  <input
+                    id="cardExp"
+                    class="form-control"
+                    placeholder="MM/YY"
+                    required
+                  />
+                </div>
+                <div class="col-6 mb-2">
+                  <label class="form-label">CVC</label>
+                  <input
+                    id="cardCVC"
+                    class="form-control"
+                    maxlength="4"
+                    required
+                  />
+                </div>
+              </div>
+
+              <div class="mt-3">
+                <button class="btn btn-primary w-100">
+                  Pay <span id="payAmountText"></span>
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bootstrap JS + Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- App JS -->
+    <script src="js/app.js"></script>
+  </body>
+</html>
